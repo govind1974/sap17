@@ -1,0 +1,108 @@
+create table dept(did number(5) primary key, dname varchar(45) not null);
+insert into dept values(1,'tech');
+insert into dept values(2,'hr');
+insert into dept values(3,'production');
+select * from dept;
+
+create table emp(eid number(5) primary key, ename varchar(45) not null, sal number, did number(5), constraint fk foreign key(did) references dept(did));
+insert into emp values(101,'diksha',50000,1);
+insert into emp values(102,'shikhar',50000,1);
+insert into emp values(103,'tarun',70000,2);
+insert into emp values(104,'govind',90000,3);
+insert into emp values(105,'manish',120000,3);
+select * from emp;
+
+create table staff(sid number(5) primary key,sname varchar(20),sal number, doj date);
+insert into staff values(1001,'diksha',50000,'04-DEC-2017');
+insert into staff values(1002,'shikhar',50000,'04-DEC-2017');
+insert into staff values(1003,'tarun',40000,'05-DEC-2017');
+insert into staff values(1004,'tarun',70000,'11-DEC-2017');
+insert into staff values(1005,'manish',120000,'04-DEC-2015');
+
+alter table staff add design varchar(20);
+alter table staff add city varchar(20) default 'delhi' not null;
+alter table staff modify sname varchar(40) not null; 
+update staff set design='manager' where sal>=70000;
+update staff set design='associate' where sal<70000;
+select * from staff;
+drop table staff;
+create table staff(sid number(5) primary key,sname varchar(20),sal number, doj date);
+insert into staff values(1001,'diksha',50000,'04-DEC-2017');
+insert into staff values(1002,'shikhar',50000,'04-DEC-2017');
+insert into staff values(1003,'tarun',40000,'05-DEC-2017');
+insert into staff values(1004,'tarun',70000,'11-DEC-2017');
+insert into staff values(1005,'manish',120000,'04-DEC-2015');
+select * from staff;
+alter table staff add desig varchar(20);
+alter table staff add city varchar(20)default 'delhi' not null;
+alter table staff rename column desig to role;
+
+
+alter table staff add constraint staff_chk check(sal>30000);
+select * from user_cons_columns where TABLE_NAME='STAFF';
+alter table staff drop constraint staff_chk;
+alter table staff drop primary key;
+alter table staff add constraint pk primary key(sid);
+alter table emp add doj date;
+update emp set doj='04-DEC-2017' where eid between 101 and 103;
+update emp set doj='11-DEC-2017' where eid between 104 and 105;
+
+select * from emp
+select eid, ename,sal from emp where sal=(select max(sal) from emp)
+select eid ename, sal from emp where sal<(select avg(sal)from emp)
+select max(sal), did from emp group by did
+select * from emp where sal in(select max(sal) from emp group by did )
+select eid, ename,lpad(sal,10,0),doj,months_between(sysdate,doj)as "experience" from emp
+select sysdate from dual
+select * from emp e1 where sal=(select avg(sal) from emp where did=e1.did)
+select * from emp e1 where sal=(select max(sal) from emp where did=e1.did)
+update emp set sal=10000 where sal=null
+select eid, ename, sal,dname from dept d inner join emp e on d.did=e.did 
+select dname,count(eid),max(sal) from emp e right join dept d on d.did=e.did group by dname
+
+select dname from emp e right join dept d on d.did=e.did where eid is null
+insert into dept values(4,'resource');
+select * from emp where sal=(select sal from emp where eid=102)and eid not in(102)
+select * from emp where sal in (select sal from emp where did=1)
+
+
+create view v1 as select eid,ename,sal,did from emp
+select * from v1
+insert into v1 values(106,'abc',45000,2);
+create view v2 as select eid,ename,sal,did from emp with READ ONLY
+select * from v2
+insert into v2 values(106,'abc',45000,2);
+
+create view v4 as select eid,ename,sal,d.did,doj,dname from emp e right join dept d on d.did=e.did
+select * from v4
+create view v5 as select * from staff
+select * from v5
+select object_name,timestamp from user_objects where object_type='VIEW' order by timestamp desc;
+
+
+
+GIT
+
+
+creates a empty repo
+git init
+
+displays status of the files in the repo(tracked/untracked/commit)
+git status
+
+to  ake the file untracked to tracked
+git add ram.txt
+
+to make permanent changes in the repo
+git commit -m message
+
+find diff between local file and the file in the repo
+git diff ram.txt
+
+to clone a repo
+git clone original_repo new_repo
+
+pull changes done by other repo
+git pull repopath branch
+
+
