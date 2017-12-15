@@ -1,0 +1,149 @@
+create table dept(did number(5) primary key,dname varchar(50) not null );
+insert into dept values(1,'IT');
+insert into dept values(2,'Stategy');
+insert into dept values(3,'Marketing');
+update dept set dname='Strategy' where dname='Tarun'
+select * from dept;
+drop table emp;
+create table emp(eid number(5) primary key,ename varchar(50) not null, sal number(10), check (sal>=5000),dept_id number(5),constraint fk foreign key(dept_id) references dept(did));
+insert into emp values(1,'Shikhar Srivastva',50000,1);
+insert into emp values(2,'Tarun Joshi',40000,3);
+insert into emp values(3,'Diksha Tiwari',50000,1);
+insert into emp values(4,'Rahul Bose',60000,2);
+insert into emp values(5,'Aprajit Khan',40000,3);
+insert into emp values(6,'Tom Sterling',40000,2);
+insert into emp values(7,'Sam',50000,1);
+insert into emp values(8,'Ram',50000,2);
+insert into emp values(9,'Ram',null,2);
+update emp set ename='Aprajit Khan' where ename ='Aprajit'
+select * from emp;
+select * from dept where did=2;
+select * from dept where dname='IT';
+select * from emp where sal between 45000 and 55000;
+select * from emp where dept_id=1;
+select * from emp,dept where emp.dept_id=dept.did and emp.dept_id=2;
+select * from emp where ename like 'D%';
+select * from emp where ename like '%Khan';
+select * from emp where length(ename)=3;
+select * from emp where ename like '_a%';
+select * from emp order by sal desc;
+select * from emp order by dept_id,ename;
+select * from emp order by ename,dept_id;
+select * from emp order by ename,SAL DESC;
+select * from emp where dept_id=1 or dept_id=2;
+select * from emp where dept_id in(1,2)
+select * from emp where sal is null
+select eid,ename,sal,(sal*12)as "annual salary"from emp 
+select  dept_id,avg(sal) as average from emp group by dept_id;
+select  dept_id,sum(sal) from emp group by dept_id;
+select count(eid) from emp where sal=(select min(sal) from emp);
+select count(eid) from emp where sal=(select max(sal) from emp);
+select count(eid),dept_id from emp where sal=(select min(sal) from emp) group by dept_id;
+
+select dept_id,average from(select  dept_id,avg(sal) as average,count(eid) as co from emp group by dept_id)where co>2;
+select  dept_id,avg(sal) as average,count(eid) as co from emp group by dept_id having count(eid)>2
+
+select * from user_constraints where table_name='EMP' and constraint_name='fk'
+SELECT * FROM USER_OBJECTS WHERE OBJECT_TYPE='TABLE'
+
+SELECT Did,upper(dname) "Dept Name" from dept
+select initcap(ename) name ,length(ename) Length from emp
+select substr(ename,1,3) name ,length(ename) Length from emp
+
+desc dual 
+select trim('   ram   ') from dual
+select Ltrim('   ram   ') from dual
+select Rtrim('   ram   ') from dual
+select LPaD(56781.32,10,'*') from dual
+select RPaD(56781.32,20,'*') from dual
+select concat('ram','asdf') from dual
+select INSTR('SAPIENT TECHNOLOGIES','T')FROM DUAL
+
+
+SELECT NVL(null,'-NA-') from dual;
+select eid,ename,NVL(to_char(sal),'ass') from emp
+select eid,ename,NVL(sal,0) from emp
+
+select power(3,3), mod(9,2), round(86.37823,2), ceil(45.3), floor(45.3), trunc(86.37823,2) from dual
+select round(68.7),trunc(68.7) from dual;
+
+SELECT MONTHS_BETWEEN 
+   (TO_DATE('02-02-1995','MM-DD-YYYY'),
+    TO_DATE('01-01-1995','MM-DD-YYYY') ) "Months"
+    FROM DUAL
+select months_between('30-jun-2018','30-dec-2017')from dual
+select months_between('30-jun-2018','29-dec-2017')from dual
+select trunc(months_between('30-jun-2018','29-dec-2017'))from dual
+
+select eid,ename,nullif(sal,40000) from emp 
+create table staff(sid number(5) primary key,sname varchar(20), sal number(5),doj date);
+alter table staff modify sname varchar(40);
+insert into staff values(1,'Aman',1000,'22-Aug-2015');
+insert into staff values(2,'Raja',1500,'02-Sep-2015');
+insert into staff values(3,'Ravi',1900,'18-Jun-2015');
+insert into staff values(4,'Krish',3000,'12-Feb-2015');
+insert into staff values(5,'Hero',2500,'28-Mar-2015');
+select * from staff;
+update staff set sal=(sal*1.1);
+alter table staff add Desig varchar(20)
+alter table staff add city varchar(20) default 'a' not null;
+alter table staff rename column desig to role
+alter table staff modify sname not null
+update staff set role='Manager' where sal>2000
+update staff set role='Associate' where sal<2000
+alter table staff modify sname varchar(50) null;
+insert into staff values(6,null,2500,'28-Mar-2015','b','c');
+update staff set sname='user' where sname is null 
+
+
+select * from user_cons_columns where TABLE_NAME='STAFF'
+alter table staff add constraint chk check(sal>=1000)
+select * from user_cons_columns where TABLE_NAME='STAFF'
+
+alter table staff drop constraint chk
+alter table dept drop primary key
+ALTER TABLE staff add constraint pk primary key(sid)
+
+select ename,dept_id from emp where sal in(select max(sal) from emp group by dept_id )  // can have same sal as max of other dept 
+select * from emp el where sal=(select max(sal) from emp where dept_id=el.dept_id) // very imp
+
+select * from emp el where sal<(select avg(sal) from emp where dept_id=el.dept_id)
+
+select * from emp el where sal<=(select avg(nvl(sal,0)) from emp where dept_id=el.dept_id)
+
+select eid,ename,sal,doj ,add_months(doj,18) "Bank Period" from emp
+select eid,ename,to_char(doj,'MM/dd/yyyy') from emp
+
+
+select eid,ename,lpad(sal,10,'*'),doj,trunc(months_between(sysdate,doj)/12) "EXP"  from emp
+
+
+select e.eid,e.ename,e.sal,d.dname from emp e inner join dept d on e.dept_id=d.did
+
+select e.eid,e.ename,e.sal from emp e inner join dept d on e.dept_id=d.did and d.dname='IT'
+
+select d.dname,max(e.sal),count(e.eid) from emp e inner join dept d on e.dept_id=d.did and d.dname='IT' group by dname
+
+select d.dname from emp e right join dept d on e.dept_id=d.did where e.dept_id is null
+
+
+select* from emp where sal= (select sal from emp where eid=5)
+
+select * from emp where sal in(select sal from emp where dept_id=3) and dept_id!=3
+select * from emp where sal >=any(select max(sal) from emp where dept_id=3) and dept_id!=3
+select * from emp where sal >=all(select sal from emp where dept_id=3) and dept_id!=3
+
+////view./////
+create  view v1 as select eid,ename,sal,dept_id from emp with read only
+select * from v1
+drop view v1
+insert into v1 values(12,'Sims',38000,2)
+
+create view v2 as select e.eid,e.ename,e.sal,d.dname from emp e inner join dept d on e.dept_id=d.did
+select * from v3
+
+
+create view v3 as select * from staff
+
+select object_name from user_objects where object_type='VIEW'
+
